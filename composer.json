@@ -1,14 +1,20 @@
 {
     "name": "almeida/laravel-elasticsearch",
     "description": "Laravel 4.2+ wrapper for ElasticSearch",
+    "type"        : "library",
+    "homepage"    : "https://github.com/arnold-almeida/laravel-elasticsearch",
+    "keywords"    : ["elasticsearch","laravel"],
     "require": {
+        "php": ">=5.4.0",
         "elasticsearch/elasticsearch": "1.1.*"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Arnold Almeida",
-            "email": "arnold@floatingpoints.com.au"
+            "email": "arnold@floatingpoints.com.au",
+            "homepage" : "http://floatingpoints.com.au",
+            "role"     : "Developer"
         }
     ],
     "minimum-stability": "dev"
