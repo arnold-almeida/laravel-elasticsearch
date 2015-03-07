@@ -36,18 +36,27 @@ abstract class ElasticDocument implements BasicDocumentInterface
      *        for now assume people are using fractal
      *
      */
-    public function __construct(Model $model, $transformerName)
+    public function __construct(Model $model, $transformerName = null)
     {
         $this->model = $model;
-        $this->transformerName = $transformerName;
+
+        if (!empty($transformerName)) {
+            $this->transformerName = $transformerName;
+        }
     }
 
     /**
      * @todo Make this implementation a bit tighter
+     * @todo Add a nicer exception
      *
      * @return Transformed fractal array
      */
     public function setBody() {
+
+        if (empty($this->transformerName)) {
+            throw new Exception("No transformer set", E_USER_ERROR);
+        }
+
         $transformer = new $this->transformerName($this->model);
         return $transformer->transform();
     }
@@ -63,6 +72,11 @@ abstract class ElasticDocument implements BasicDocumentInterface
         ]);
     }
 
+    public function create()
+    {
+        return $this->index();
+    }
+
     public function update()
     {
         return $this->index();
@@ -76,6 +90,30 @@ abstract class ElasticDocument implements BasicDocumentInterface
             'type' => $this->setType(),
             'id' => $this->setId(),
         ]);
+    }
+
+
+    /**
+     * Basic query
+     */
+    public function search($query)
+    {
+        $client = new \Elasticsearch\Client();
+        $items = $client->search([
+            'index' => $this->setIndex(),
+            'type' => $this->setType(),
+            'body' => [
+                'query' => [
+                    'query_string' => [
+                        'query' => $query
+                    ]
+                ]
+            ]
+        ]);
+
+        dd($items);
+
+        return $items;
     }
 
 
