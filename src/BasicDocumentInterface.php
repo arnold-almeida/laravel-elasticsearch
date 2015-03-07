@@ -10,22 +10,22 @@
 namespace Almeida\LaravelElasticSearch;
 
 
-interface ElasticeBaseInterface {
+interface BasicDocumentInterface {
 
     /**
      * the "database"
      */
-    public function index();
+    public function setIndex();
 
     /**
      * the "table"
      */
-    public function type();
+    public function setType();
 
     /**
      * Your object id, uuid, etc
      */
-    public function id();
+    public function setId();
 
     /**
      * This is where it gets intresting.
@@ -35,7 +35,7 @@ interface ElasticeBaseInterface {
      * Don't be lazy. Use a Transformer.
      * Send @philsturgeon some bitcoin for [thephpleague/fractal]
      */
-    public function body();
+    public function setBody();
 
 
 

@@ -1,3 +1,17 @@
+## GOTCHAS
+
+Deving locally on OSX i couldnt get the client to connect to elasticsearch even
+though i could access it in the browser at http://localhost:9200
+
+This fixed it for now...
+
+- http://benjaminknofe.com/blog/2015/02/19/no-connection-on-localhost-to-elasticsearch-on-osx/
+
+The correct way to access is actually through, http://127.0.0.1:9200
+
+Will work it out when i sort out nicer config etc.
+
+
 ### Weekend Hack
 
 - Trying to put togeter a nice package so we can use ElasticSearch easily

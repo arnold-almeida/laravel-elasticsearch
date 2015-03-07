@@ -9,14 +9,73 @@
  */
 namespace Almeida\LaravelElasticSearch;
 
+use Illuminate\Database\Eloquent\Model;
 
-class ElasticDocument implements ElasticBaseInterface
+abstract class ElasticDocument implements BasicDocumentInterface
 {
+
+    /**
+     * Elasticsearch\Client
+     */
+    protected $client;
+
     protected $model;
 
-    public __construct(\Illuminate\Database\Eloquent\Model $model)
+    /**
+     * [__construct description]
+     *
+     * @param Model  $model
+     *
+     *        - An Elequoent model
+     *        - in theory should also work, jenssegers/laravel-mongodb
+     *        - or any object that implements getId ? or similar ?
+     *
+     * @param String $transformer
+     *
+     *        The name of the transformer class to call
+     *        for now assume people are using fractal
+     *
+     */
+    public function __construct(Model $model, $transformerName)
     {
         $this->model = $model;
+        $this->transformerName = $transformerName;
+    }
+
+    /**
+     * @todo Make this implementation a bit tighter
+     *
+     * @return Transformed fractal array
+     */
+    public function setBody() {
+        $transformer = new $this->transformerName($this->model);
+        return $transformer->transform();
+    }
+
+    public function index()
+    {
+        $client = new \Elasticsearch\Client();
+        $client->index([
+            'index' => $this->setIndex(),
+            'type' => $this->setType(),
+            'id' => $this->setId(),
+            'body' => $this->setBody()
+        ]);
+    }
+
+    public function update()
+    {
+        return $this->index();
+    }
+
+    public function delete()
+    {
+        $client = new \Elasticsearch\Client();
+        $client->index([
+            'index' => $this->setIndex(),
+            'type' => $this->setType(),
+            'id' => $this->setId(),
+        ]);
     }
 
 
