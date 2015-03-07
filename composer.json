@@ -1,0 +1,15 @@
+{
+    "name": "almeida/laravel-elasticsearch",
+    "description": "Laravel 4.2+ wrapper for ElasticSearch",
+    "require": {
+        "elasticsearch/elasticsearch": "1.1.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arnold Almeida",
+            "email": "arnold@floatingpoints.com.au"
+        }
+    ],
+    "minimum-stability": "dev"
+}
