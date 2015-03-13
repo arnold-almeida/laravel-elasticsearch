@@ -146,6 +146,19 @@ The correct way to access is actually through, http://127.0.0.1:9200
 
 Will work it out when i sort out nicer config etc.
 
+### Required reading
+
+- http://www.elastic.co/guide/en/elasticsearch/guide/current/
+
+##### Relevance
+
+How is it calculated ?
+
+- http://www.elastic.co/guide/en/elasticsearch/guide/current/relevance-intro.html
+
+##### Monitoring elasticsearch using Marvel (dev)
+
+https://www.elastic.co/downloads/marvel
 
 
 ### Thanks for the notes
