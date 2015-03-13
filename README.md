@@ -37,7 +37,7 @@ class MovieDocument extends \Almeida\LaravelElasticSearch\ElasticDocumentAbstrac
 
 	protected $type = 'movies';
 
-	public function setId($listing) {
+	public function setId($movie) {
 		return $movie->id;
 	}
 
