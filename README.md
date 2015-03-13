@@ -15,9 +15,9 @@ Bring on Elasticsearch.
 
 ### Install via Composer
 
-    require : {
-        "almeida/laravel-elasticsearch" : "dev-master"
-    }
+	require : {
+		"almeida/laravel-elasticsearch" : "dev-master"
+	}
 
 
 ### Step 1
@@ -31,30 +31,16 @@ Lets assume we are working with movies.
 /**
  * Acme\Search\MovieDocument
  */
-class MovieDocument extends \Almeida\LaravelElasticSearch\ElasticDocument
+class MovieDocument extends \Almeida\LaravelElasticSearch\ElasticDocumentAbstract
 {
-    /**
-     * the "database"
-     */
-    public function setIndex()
-    {
-        // what do you think of when mention cluster ?
-        return 'cluster ...';
-    }
+	protected $index = 'movie_cluster';
 
-    /**
-     * the "table" / "collection"
-     */
-    public function setType() {
-        return 'movies';
-    }
+	protected $type = 'movies';
 
-	 /**
-	 * look at the ElasticDocument constructor for more info
-	 */
-    public function setId() {
-        return $this->model->id;
-    }
+	public function setId($listing) {
+		return $movie->id;
+	}
+
 
 }
 ```
@@ -67,22 +53,31 @@ Assuming you have already gave a working `fractal/transformer`
 
 ```php
 
-	$document = new \Acme\Search\MovieDocument($listing, 'Acme\MovieTransformer');
+	$options = [];
+	$options['transformer'] = 'Acme\MovieTransformer';
+
+	$document = new \Acme\Search\MovieDocument($options);
+	$document->setBody($movie);
 	$document->index();
 	// or $document->create();
 	// or $document->update();
 
+	// OR
+	$document = new \Acme\Search\MovieDocument();
+	$document->setBody($movie);
+	$document->setTransformer('Acme\MovieTransformer');
+	$document->index();
+
+
 ```
-### Deleting an index
+### Deleting an index (@todo)
 
 Deleting an index.
 
 ```php
 
-	$document = new \Acme\Search\MovieDocument($listing);
-	$document->index();
-	// or $document->create();
-	// or $document->update();
+	$document = new \Acme\Search\MovieDocument();
+	$document->delete($movie->id);
 
 ```
 
@@ -97,7 +92,9 @@ Deleting an index.
 
 		foreach ($movies as $i => $movie) {
 
-			$document = new \Acme\Search\MovieDocument($movie, 'Acme\MovieTransformer');
+			$document = new \Acme\Search\MovieDocument();
+			$document->setBody($movie);
+			$document->setTransformer('Acme\MovieTransformer');
 			$document->index();
 
 			$this->info("Indexed : {$movie->title}");
@@ -115,22 +112,18 @@ Deleting an index.
 Promise to work on it over the next few days.
 
 ```php
-	$document->search($query);
+
+	$movieTitle = 'Scarface';
+	$document->basicSearch($movieTitle);
+
 ```
 
 
 ### Todo
 
-- Ive added a basic search($query) to ElasticDocument but i will abstract as below over the next few days
+- think about this more
 
 - Move search, stats, and aggerates to Traits so we only use them on applicable documents
-
-- Apparantly composer is not autoloading so ive manually added
-
- ``'Almeida\\LaravelElasticSearch\\' => array($vendorDir . '/almeida/laravel-elasticsearch/src')``
-
- to my PSR4 autoloader for now.
-
 
 
 ## GOTCHAS
