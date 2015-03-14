@@ -24,7 +24,7 @@ Bring on Elasticsearch.
 
 Extend the abstract `ElasticDocument` so you get some easy CRUD.
 
-Lets assume we are working with movies.
+Let's assume we are working with movies.
 
 ```php
 
@@ -49,7 +49,7 @@ class MovieDocument extends \Almeida\LaravelElasticSearch\ElasticDocumentAbstrac
 
 Create an index.
 
-Assuming you have already gave a working `fractal/transformer`
+Assuming you have already a working `fractal/transformer`
 
 ```php
 
@@ -142,6 +142,7 @@ Will work it out when i sort out nicer config etc.
 ### Required reading
 
 - http://www.elastic.co/guide/en/elasticsearch/guide/current/
+- http://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_quickstart.html
 
 ##### Relevance
 

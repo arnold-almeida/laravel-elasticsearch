@@ -14,18 +14,24 @@ use Illuminate\Database\Eloquent\Model;
 abstract class ElasticDocumentAbstract
 {
     // required
+    // the 'collection'
     protected $index;
 
     // required
+    // the 'object' we are storing
     protected $type;
 
     protected $options = [
         'transformer' => null       // Name of transformer to use
     ];
 
-    protected $id;
-
     protected $body;
+
+    /**
+     * The raw response from an Elastic call
+     * @var Array
+     */
+    protected $raw;
 
     /**
      * @var Elasticsearch\Client
@@ -47,11 +53,6 @@ abstract class ElasticDocumentAbstract
             $this->setTransformer($options['transformer']);
         }
     }
-
-    /**
-     * (Optional) Your object id, uuid, etc
-     */
-    abstract public function setId($obj);
 
     protected function createClient()
     {
@@ -96,47 +97,53 @@ abstract class ElasticDocumentAbstract
         return $this->body;
     }
 
-    public function index()
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * Index a document
+     *
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function index($id)
     {
         if (empty($this->body)) {
-            // https://www.youtube.com/watch?v=A_ulZiob5I0
-            // If you str_replace('Boy', 'Body', $youtubeTitle) it totally works...
             throw new Exception("Unable to create and index with no body.", E_USER_ERROR);
         }
 
-        return $this->client->index([
-            'index' => $this->index,
-            'type'  => $this->type,
-            'id'    => $this->id,
-            'body'  => $this->body
-        ]);
-    }
-
-    /**
-     * Alias
-     */
-    public function create()
-    {
-        return $this->index();
-    }
-
-    /**
-     * Alias
-     */
-    public function update()
-    {
-        return $this->index();
-    }
-
-    public function delete()
-    {
-        return $this->client->index([
+        return $this->client->delete([
             'index' => $this->index,
             'type' => $this->type,
-            'id' => $this->id,
+            'id' => $id,
+            'body' => $this->body,
         ]);
     }
 
+    /**
+     * "truncate" an index
+     */
+    public function truncate()
+    {
+        $params = [
+            'index' => $this->index,
+        ];
+        return $this->client->indices()->delete($params);
+    }
+
+    /**
+     * Delete's a document
+     */
+    public function delete($id)
+    {
+        return $this->client->delete([
+            'index' => $this->index,
+            'type' => $this->type,
+            'id' => $id,
+        ]);
+    }
 
     /**
      * Exposes search
@@ -174,15 +181,6 @@ abstract class ElasticDocumentAbstract
             ]
         ]);
     }
-
-    /**
-     * Alias for $this->search()
-     */
-    public function raw(Array $query)
-    {
-        return $this->search($query);
-    }
-
 
 }
 
