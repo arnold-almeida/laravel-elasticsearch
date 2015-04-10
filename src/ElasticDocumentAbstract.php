@@ -21,6 +21,9 @@ abstract class ElasticDocumentAbstract
     // the 'object' we are storing
     protected $type;
 
+    // default number of results to return
+    public $size = 10;
+
     protected $options = [
         'transformer' => null       // Name of transformer to use
     ];
@@ -46,7 +49,6 @@ abstract class ElasticDocumentAbstract
     public function __construct($options = [])
     {
         $this->client = new \Elasticsearch\Client();
-
         $this->options = array_merge($this->options, $options);
 
         if (!empty($options['transformer'])) {
@@ -62,8 +64,8 @@ abstract class ElasticDocumentAbstract
     /**
      * @param String $transformer
      *
-     *        The name of the transformer class to call
-     *        for now assume people are using fractal
+     * The name of the transformer class to call
+     * for now assume people are using fractal
      */
     public function setTransformer($transformer)
     {
@@ -114,7 +116,7 @@ abstract class ElasticDocumentAbstract
             throw new Exception("Unable to create and index with no body.", E_USER_ERROR);
         }
 
-        return $this->client->delete([
+        return $this->client->index([
             'index' => $this->index,
             'type' => $this->type,
             'id' => $id,
@@ -180,6 +182,26 @@ abstract class ElasticDocumentAbstract
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @param array $items the elasticsearch result
+     * @return array $results ElasticDocument/s
+     */
+    public function returnResults($items)
+    {
+        // In case we need to access raw data...
+        $this->raw = $items;
+
+        $results = $items['hits']['hits'];
+        $hits    = count($items['hits']);
+
+        if ($hits == 0) {
+            // @todo - Add a nicer exception
+            throw new Exception("No matching Elasticdocuments found");
+        }
+
+        return $results;
     }
 
 }
