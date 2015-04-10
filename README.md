@@ -2,7 +2,9 @@
 
 I need to improve search. Currently using mongob, 2dspheres etc.
 
-Bring on Elasticsearch.
+Bring on Elasticsearch. Basically just a wrapper for the offical client.
+
+http://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html
 
 ##### Afternoon hack
 
